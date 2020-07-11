@@ -6,19 +6,19 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 use Intervention\Image\Facades\image;
 use Illuminate\Support\Facades\Storage;
-use App\Models\Admin\ProductType;
+use App\Models\Admin\ProductCategory;
 use App\Models\Admin\Combo;
 
 
 
 class Product extends Model
 {
-    protected $fillable = ['product_name', 'product_price', 'product_trademark', 'product_description', 'product_image_name', 'product_state', 'product_type_id'];
+    protected $fillable = ['product_name', 'product_price', 'product_trademark', 'product_net_content', 'product_image_name', 'product_flavor_color', 'product_state', 'product_category_id'];
     protected $primaryKey = 'product_id';
 
-    public function productType()
+    public function productCategory()
     {
-        return $this->belongsTo(ProductType::class, 'product_type_id');
+        return $this->belongsTo(ProductCategory::class, 'product_category_id');
     }
 
     public function combos()
@@ -30,7 +30,7 @@ class Product extends Model
     {
         if ($product_image) {
             if ($actual) {
-                Storage::disk('public')->delete("images/products/$actual");
+                Storage::disk('dropbox')->getDriver()->getAdapter()->getClient()->delete("images/products/".$actual);
             }
             $imageName = Str::random(20) . '.jpg';
 
@@ -39,8 +39,10 @@ class Product extends Model
             //     $constraint->upsize();
             // });
 
-            Storage::disk('public')->put("images/products/$imageName", $imagen->stream());
-            return $imageName;
+            Storage::disk('dropbox')->put("images/products/$imageName", $imagen->stream());
+            $dropbox = Storage::disk('dropbox')->getDriver()->getAdapter()->getClient();
+            $response = $dropbox->createSharedLinkWithSettings("images/products/$imageName", ["requested_visibility"=>"public"]);
+            return str_replace('dl=0', 'raw=1', $response['url']);
         } else {
             return false;
         } 

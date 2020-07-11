@@ -19,7 +19,7 @@ class CreateComboProductTable extends Migration
             $table->bigInteger('product_id')->unsigned();
             $table->string('units');
 
-            $table->foreign('combo_id')->references('combo_id')->on('combos')->onDelete('restrict')->onUpdate('restrict');
+            $table->foreign('combo_id')->references('combo_id')->on('combos')->onDelete('cascade')->onUpdate('restrict');
             $table->foreign('product_id')->references('product_id')->on('products')->onDelete('restrict')->onUpdate('restrict');
         });
     }

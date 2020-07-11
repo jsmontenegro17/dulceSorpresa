@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Admin\Product;
-use App\Models\Admin\ProductType;
+use App\Models\Admin\ProductCategory;
 use App\Http\Requests\ValidationProduct;
 use Illuminate\Support\Facades\Storage;
 
@@ -21,8 +21,9 @@ class ProductController extends Controller
     public function index()
     {
         $count = 1;
-        $products = Product::orderBy('created_at', 'DESC')->with('productType')->get();
-        return view('admin.product.index', compact('products', 'count'));
+        $products = Product::orderBy('created_at', 'DESC')->with('productCategory')->get();
+        $count_products = count($products);
+        return view('admin.product.index', compact('products', 'count', 'count_products'));
     }
 
     /**
@@ -32,8 +33,8 @@ class ProductController extends Controller
      */
     public function create()
     {
-        $product_types=  ProductType::orderBy('product_type_id')->get();
-        return view('admin.product.create', compact('product_types'));
+        $product_categorys=  ProductCategory::orderBy('product_category_id')->get();
+        return view('admin.product.create', compact('product_categorys'));
     }
 
     /**
@@ -45,7 +46,7 @@ class ProductController extends Controller
     public function store(ValidationProduct $request)
     {
         
-        if($request->product_image ==null){
+        if($request->product_image == null){
 
         }else{
 
@@ -85,8 +86,8 @@ class ProductController extends Controller
     {
 
         $product = Product::findOrFail($product_id); 
-        $product_types=  ProductType::orderBy('product_type_id')->get();
-        return view('admin.product.edit', compact('product','product_types'));
+        $product_categorys=  ProductCategory::orderBy('product_category_id')->get();
+        return view('admin.product.edit', compact('product','product_categorys'));
     }
 
     /**
@@ -107,19 +108,17 @@ class ProductController extends Controller
         }else{
             
             $product = Product::findOrFail($product_id);
+            $rute = explode("/", $product->product_image_name);
 
-            if ($product->product_image_name == NULL) {
-
-                if($name_image = Product::setImage($request->product_image))
+            if (count($rute)==6) {
+                $name_image_delete = explode("?",$rute[5]);
+                if($name_image = Product::setImage($request->product_image, $name_image_delete[0]))
                 $request->request->add(['product_image_name' => $name_image]);
-                
-
             }else{
-
-                if($name_image = Product::setImage($request->product_image,$product->product_image_name))
-                $request->request->add(['product_image_name' => $name_image]);
-                
+                if($name_image = Product::setImage($request->product_image))
+                $request->request->add(['product_image_name' => $name_image]);  
             }
+
         }
 
         if(isset($request->state)){
@@ -144,12 +143,17 @@ class ProductController extends Controller
     {
         
         $product = Product::findOrFail($product_id);
+        $rute = explode("/", $product->product_image_name);
+        $name_image_delete = explode("?",$rute[5]);
+
         $count_product = count($product->combos);
+
         if($count_product == 0){
 
-            Storage::disk('public')->delete("images/products/$product->product_image_name");
+            Storage::disk('dropbox')->getDriver()->getAdapter()->getClient()->delete("images/products/".$name_image_delete[0]);
             Product::destroy($product_id);
-            return redirect('admin/product/')->with('message', 'Producto eliminado correctamente');  
+            return redirect('admin/product/')->with('message', 'Producto eliminado correctamente');
+              
         }else{
             return redirect('admin/product/')->with('message', 'Este producto esta siendo utilizado');
         }
@@ -183,8 +187,16 @@ class ProductController extends Controller
     public function updateimage(Request $request, $product_id)
     {
         $product = Product::findOrFail($product_id);
-        if($name_image = Product::setImage($request->product_image, $product->product_image_name))
-        $request->request->add(['product_image_name' => $name_image]);
+        $rute = explode("/", $product->product_image_name);
+
+        if (count($rute)==6) {
+           $name_image_delete = explode("?",$rute[5]);
+           if($name_image = Product::setImage($request->product_image, $name_image_delete[0]))
+            $request->request->add(['product_image_name' => $name_image]);
+        }else{
+            if($name_image = Product::setImage($request->product_image))
+            $request->request->add(['product_image_name' => $name_image]);  
+        }
 
         $product->update($request->all());
         return redirect('admin/product')->with('message', 'Imagen del producto fue cambiada con exito');     

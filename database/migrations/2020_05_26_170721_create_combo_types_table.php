@@ -15,7 +15,7 @@ class CreateComboTypesTable extends Migration
     {
         Schema::create('combo_types', function (Blueprint $table) {
             $table->bigIncrements('combo_type_id');
-            $table->string('combo_type_name');
+            $table->string('combo_type_name',100);
             $table->timestamps();
         });
     }

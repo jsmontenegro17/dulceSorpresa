@@ -1,13 +1,21 @@
 @extends('dsadmin.layout')
 
-@section('title','combo')
+@section('title','Combo')
 
 @section('scripts')
 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-fileinput/5.1.1/js/plugins/piexif.min.js" type="text/javascript"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-fileinput/5.1.1/js/plugins/sortable.min.js" type="text/javascript"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-fileinput/5.1.1/js/plugins/purify.min.js" type="text/javascript"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" type="text/javascript"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-fileinput/5.1.1/js/fileinput.min.js"></script>
+  <script src="{{asset('dsadmin/plugins/bootstrap-fileinput/themes/fa/theme.js')}}"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-fileinput/5.1.1/js/locales/es.js"></script>
   <script src="{{asset('dsadmin/plugins/jquery-validation/jquery.validate.min.js')}}"></script>
   <script src="{{asset('dsadmin/plugins/jquery-validation/additional-methods.min.js')}}"></script>
   <script src="{{asset('dsadmin/plugins/jquery-validation/localization/messages_es.min.js')}}"></script>
-  <script src="{{asset('dsadmin/pages/scripts/combo/create.js')}}"></script>
+  <script src="{{asset('dsadmin/pages/scripts/combo-image/edit.js')}}"></script>
   <script src="{{asset('dsadmin/custom/validation-general.js')}}"></script>
   <script src="{{asset('dsadmin/plugins/bs-custom-file-input/bs-custom-file-input.min.js')}}"></script>
 
@@ -22,6 +30,8 @@
 @section('styles')
   <link rel="stylesheet" href="{{asset("dsadmin//plugins/toastr/toastr.min.css")}}">
   <link href="{{asset("dsadmin/plugins/bootstrap-fileinput/css/fileinput.min.css")}}" rel="stylesheet" type="text/css"/>
+    <link href="{{asset("dsadmin/pages/css/combo-image/edit.css")}}" rel="stylesheet" type="text/css"/>
+
 
 @endsection
 
@@ -44,29 +54,31 @@
           <div class="col-md-12  ">
           <!-- /.card-header -->
               <!-- form start -->
-              <form role="form" enctype="multipart/form-data" class="col-md-12" method="POST" action="{{route('combo-image-update', ['combo_image_name' => $combo_image_name])}}" id="form-general">
+              <form role="form" enctype="multipart/form-data" class="col-md-12" method="POST" action="{{route('combo-image-update', ['combo_image_id' => $combo_image_id])}}" id="form-general">
                 @csrf @method("put")
                 <div class="card-body">                                                      
                     <div class="row form-group justify-content-center">
-                      <div class="col-md-2">
-                        <div class="product-image-thumb"><img src="{{Storage::url("images/combos/".$combo_image_name)}}" alt="Product Image"></div>
-                      </div>
-                      <div class="row col-md-10">
-                        <label for="exampleInputFile">Selecciona otra imagen si la deseas cambiar</label>
-                        <div class="input-group col-md-11">
-                          <div class="custom-file">
-                            <input type="file" class="custom-file-input" name="combo_image" id="exampleInputFile">
-                            <label class="custom-file-label" for="exampleInputFile">da click aquí para seleccionarla</label>
-                          </div>
-                          <div class="form-group col-md-1">
-                            <button type="submit" class="btn btn-primary">Guardar</button>
-                          </div>
+
+                        <input id="combo_image_name" type="hidden" value="{{$combo->combo_image_name}}">
+
+                      
+                        <div class="col-md-4 text-center">
+                            <div class="kv-combo">
+                                <div class="file-loading">
+                                    <input id="combo_image" name="combo_image" type="file">
+                                </div>
+                            </div>
+                            <div class="kv-combo-hint">
+                                <small>Selecciona la imagen del combo, si la deseas cambiar</small>
+                            </div>
                         </div>
-                      </div>                    
+                   
                     </div>
 
                   </div>  
-
+                  <div class="card-footer justify-content-center">
+                    <button type="submit" class="btn btn-success col-md-12">Guardar</button>
+                  </div>  
                 <!-- /.card-body -->
               </form>
             </div>

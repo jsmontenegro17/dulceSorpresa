@@ -30,10 +30,18 @@
             <a href="{{route('admin')}}" class="nav-link">
               <i class="nav-icon fa fa-users"></i>
               <p>
-                Ususarios
+                Personal
                 <i class="right fas fa-angle-left"></i>
               </p>
             </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="{{route('user-index')}}" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Usuarios</p>
+                </a>
+              </li>
+            </ul>            
             <ul class="nav nav-treeview">
               <li class="nav-item">
                 <a href="{{route('customer-index')}}" class="nav-link">
@@ -47,10 +55,18 @@
             <a href="{{route('admin')}}" class="nav-link">
               <i class="nav-icon fa fa-warehouse"></i>
               <p>
-                Producto
+                Bodega
                 <i class="right fas fa-angle-left"></i>
               </p>
             </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="{{route('base-index')}}" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Bases</p>
+                </a>
+              </li>
+            </ul>
             <ul class="nav nav-treeview">
               <li class="nav-item">
                 <a href="{{route('product-index')}}" class="nav-link">
@@ -58,27 +74,19 @@
                   <p>Productos</p>
                 </a>
               </li>
-            </ul>
+            </ul>            
             <ul class="nav nav-treeview">
               <li class="nav-item">
-                <a href="{{route('product-type-index')}}" class="nav-link">
+                <a href="{{route('product-category-index')}}" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
-                  <p>Tipo de productos</p>
+                  <p>Categoria de productos</p>
                 </a>
               </li>
             </ul>              
-          </li>
-          <li class="nav-item has-treeview">
-            <a href="{{route('base-index')}}" class="nav-link">
-              <i class="nav-icon fa fa-box-open"></i>
-              <p>
-                Base
-              </p>
-            </a>
-          </li>           
+          </li>          
           <li class="nav-item has-treeview">
             <a href="{{route('admin')}}" class="nav-link">
-              <i class="nav-icon fa fa-warehouse"></i>
+              <i class="nav-icon fa fa-archive"></i>
               <p>
                 Combo
                 <i class="right fas fa-angle-left"></i>
@@ -100,7 +108,40 @@
                 </a>
               </li>
             </ul>
-          </li>                             
+          </li>
+          <li class="nav-item has-treeview">
+            <a href="{{route('suggestions-index')}}" class="nav-link">
+              <i class="nav-icon fa fa-list-alt"></i>
+              <p>
+                Sugerencias
+              </p>
+            </a>
+          </li>   
+          <li class="nav-item has-treeview">
+            <a href="http://localhost/backup/php/" target="_bank" class="nav-link">
+              <i class="nav-icon fa fa-database"></i>
+              <p>
+                DB
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="http://localhost/backup/php/Backup.php" target="_bank" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Descargar</p>
+                </a>
+              </li>
+            </ul>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="http://localhost/backup/php/" target="_bank" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Subir</p>
+                </a>
+              </li>
+            </ul>
+          </li>                                              
         </ul>
       </nav>
       <!-- /.sidebar-menu -->

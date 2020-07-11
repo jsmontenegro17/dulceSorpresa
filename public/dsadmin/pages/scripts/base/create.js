@@ -1,27 +1,20 @@
 $(document).ready(function () {
 
-JSMT.validacionGeneral('form-general');
+	JSMT.validacionGeneral('form-general');
 
-$("#base_name").focus();
+	$("#base_name").focus();
 
-$("#base_image").on('change',function(event){
+    $("#input-24").fileinput({
+    	theme: "fa",
+    	language: "es",
+    	browseLabel: 'Buscar...',
+        initialPreviewAsData: false,
+        deleteUrl: "/site/file-delete",
+        overwriteInitial: false,
+        maxFileSize: 1000,
+        maxFileCount: 4,
+        showUpload: false
+    });
 
-	var jquery_count = this.files.length;
-	var image_count = $(this).attr('data-count');
-
-	if(jquery_count <= image_count){
-
-		$('.btn-primary').removeClass('disabled');
-		$(this).removeClass('is-invalid');
-		$("#error-image").remove();
-
-	}else{
-
-		$(this).addClass('is-invalid');
-		$('.btn-primary').addClass('disabled');
-		$("#label-base-image").append("<span id='error-image' style='color: red; font-size: 12px;'>No puedes selecionar más de "+image_count+" imagenes</span>");
-	}
-
-});
 
 });

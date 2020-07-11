@@ -265,4 +265,22 @@ $(document).ready(function () {
         }
 	});	
 
+    $("#input-24").fileinput({
+    	theme: "fa",
+    	language: "es",
+        initialPreviewAsData: false,
+        deleteUrl: "/site/file-delete",
+        overwriteInitial: false,
+        maxFileSize: 1000,
+        maxFileCount: 4,
+        showUpload: false
+    });
+
+    $(document).on('click','[data-toggle="lightbox"]', function(event){
+      event.preventDefault();
+      $(this).ekkoLightbox({
+        alwaysShowClose: true
+      });
+    });
+
 });

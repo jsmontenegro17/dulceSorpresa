@@ -1,9 +1,17 @@
 @extends('dsadmin.layout')
 
-@section('title','combo')
+@section('title','Combo')
 
 @section('scripts')
 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-fileinput/5.1.1/js/plugins/piexif.min.js" type="text/javascript"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-fileinput/5.1.1/js/plugins/sortable.min.js" type="text/javascript"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-fileinput/5.1.1/js/plugins/purify.min.js" type="text/javascript"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" type="text/javascript"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-fileinput/5.1.1/js/fileinput.min.js"></script>
+  <script src="{{asset('dsadmin/plugins/bootstrap-fileinput/themes/fa/theme.js')}}"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-fileinput/5.1.1/js/locales/es.js"></script>
   <script src="{{asset('dsadmin/plugins/jquery-validation/jquery.validate.min.js')}}"></script>
   <script src="{{asset('dsadmin/plugins/jquery-validation/additional-methods.min.js')}}"></script>
   <script src="{{asset('dsadmin/plugins/jquery-validation/localization/messages_es.min.js')}}"></script>
@@ -22,6 +30,7 @@
 @section('styles')
   <link rel="stylesheet" href="{{asset("dsadmin//plugins/toastr/toastr.min.css")}}">
   <link href="{{asset("dsadmin/plugins/bootstrap-fileinput/css/fileinput.min.css")}}" rel="stylesheet" type="text/css"/>
+  <link href="{{asset("dsadmin/pages/css/combo-image/create.css")}}" rel="stylesheet" type="text/css"/>
 
 @endsection
 
@@ -29,16 +38,16 @@
 
 <section class="content">
 @php
-	$count_img = count($combo->comboImages);
-	$add_img = 4 - $count_img;
+  $count_img = count($combo->comboImages);
+  $add_img = 4 - $count_img;
  @endphp
   <!-- Default box -->
-  <div class="card">
+  <div class="card card-primary">
     <div class="card-header">
-    @if($add_img == 1)	
+    @if($add_img == 1)  
         <h3 class="card-title"><strong>Agregar la imagen que hace falta de la {{$combo->combo_name}}</strong></h3>
     @else
-    	<h3 class="card-title"><strong>Agrega las {{$add_img}} imagenes de la {{$combo->combo_name}} que hacen falta o tambien puedes agregar solo una</strong></h3>
+      <h3 class="card-title"><small>Agrega las {{$add_img}} imagenes de la <strong>{{$combo->combo_name}}</strong> que hacen falta o tambien puedes agregar solo una</small></h3>
     @endif  
       <div class="float-sm-right">
         <a href="{{route('combo-index')}}">Listado</a> / <a class="active">Agregar Imagen</a>
@@ -51,29 +60,20 @@
           <div class="col-md-12  ">
           <!-- /.card-header -->
               <!-- form start -->
-              <form role="form" enctype="multipart/form-data" class="col-md-12" method="POST" action="{{route('combo-image-store')}}" >
+              <form role="form" id="form-general" enctype="multipart/form-data" class="col-md-12" method="POST" action="{{route('combo-image-store')}}" >
                 @csrf
                 <div class="card-body">                                                      
-                    <div class="row form-group justify-content-center">
-                      <div class="row col-md-10">
-                        <label for="combo_image" id="label-combo-image">
-                        	Seleccionar
-                        </label>
-                        <div class="input-group col-md-11">
-                          <div class="custom-file">
-                          	<input type="hidden" name="combo_id" value="{{$combo->combo_id}}">
-                            <input type="file" data-count="{{$add_img}}"  class="custom-file-input" name="combo_image[]" id="combo_image" accept="image/png, .jpeg, .jpg, image/gif" multiple="multiple">
-                            <label class="custom-file-label" for="combo_image">da click aquí para seleccionarla</label>
-                          </div>
-                          <div class="form-group col-md-1">
-                            <button type="submit" id="save_image" class="btn btn-primary">Guardar</button>
-                          </div>
-                        </div>
-                      </div>                    
-                    </div>
-
-                  </div>  
-
+                  <div class="row form-group justify-content-center">
+                      <div class="col-md-12">
+                        <input type="hidden" name="combo_id" value="{{$combo->combo_id}}">
+                        <input type="hidden" id="max_image_count" value="{{$add_img}}">
+                        <input id="input-24" name="combo_image[]" type="file" multiple required>
+                      </div>
+                  </div>
+                 <div class="form-group col-md-12">
+                    <button type="submit" id="save_image" class="btn btn-primary col-md-12">Guardar</button>
+                  </div>
+                </div>                    
                 <!-- /.card-body -->
               </form>
             </div>

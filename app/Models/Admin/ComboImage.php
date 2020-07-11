@@ -22,17 +22,19 @@ class ComboImage extends Model
     {
         if ($combo_image) {
             if ($actual) {
-                Storage::disk('public')->delete("images/combos/$actual");
+                Storage::disk('dropbox')->getDriver()->getAdapter()->getClient()->delete("images/combos/".$actual);
             }
-            $imageName = Str::random(20) . '.jpg';
+            $imageName = Str::random(20) . '.jpg'; 
 
             $imagen = Image::make($combo_image)->encode('jpg', 75);
             // $imagen->resize(65, 65, function ($constraint) {
             //     $constraint->upsize();
             // });
 
-            Storage::disk('public')->put("images/combos/$imageName", $imagen->stream());
-            return $imageName;
+            Storage::disk('dropbox')->put("images/combos/$imageName", $imagen->stream());
+            $dropbox = Storage::disk('dropbox')->getDriver()->getAdapter()->getClient();
+            $response = $dropbox->createSharedLinkWithSettings("images/combos/$imageName", ["requested_visibility"=>"public"]);
+            return str_replace('dl=0', 'raw=1', $response['url']);;
         } else {
             return false;
         } 

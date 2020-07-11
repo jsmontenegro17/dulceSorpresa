@@ -23,6 +23,7 @@ $(document).ready(function () {
     	const id = parseInt($(this).attr("data-id"));
 
     	if( $(this).is(':checked') ){
+
 	      	const units = parseInt($('#units'+id).val());	
 	      	$('#units'+id).removeAttr('disabled');
 			$('#units'+id).attr('min','1');
@@ -57,7 +58,8 @@ $(document).ready(function () {
 
    	var price_total = $("#price-form").val();
    	$("#price").attr('data-current-price',price_total);
-	$("#price").html(price_total);	
+	$("#price").html(price_total);
+
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -68,7 +70,7 @@ $(document).ready(function () {
 
 	    $("#gain").val('');				
 		$("#price_gain").val('');	
-		$("#porcentage").val('');
+		$("#percentage").val('');
 
 		const id = parseInt($(this).attr("data-id"));
 		const price = parseInt($(this).attr("data-price"));
@@ -111,7 +113,7 @@ $(document).ready(function () {
 
 	    $("#gain").val('');				
 		$("#price_gain").val('');	
-		$("#porcentage").val('');
+		$("#percentage").val('');
 
 		const price_product =  parseInt($(this).attr('data-price'));
 		const units =  parseInt($(this).val());
@@ -143,7 +145,7 @@ $(document).ready(function () {
 
 	$("#gain").val('');				
 	$("#price_gain").val('');	
-	$("#porcentage").val('');
+	$("#percentage").val('');
 
 	let price_base = parseInt($(this).attr('data-price-base'));
 	let price_base_before = parseInt($(this).attr('data-price-before'));
@@ -173,12 +175,12 @@ $(document).ready(function () {
 
 	});
 
-	$('#porcentage').keyup(function(event){
+	$('#percentage').keyup(function(event){
 
 		const price = parseInt($("#price").attr('data-current-price'));
-		const porcentage = parseInt($(this).val());
+		const percentage = parseInt($(this).val());
 		
-		const gain = price * (porcentage/100);
+		const gain = price * (percentage/100);
 
 		$("#gain").val(gain);				
 		$("#price_gain").val(gain + price);				
@@ -192,6 +194,7 @@ $(document).ready(function () {
 
 	$('#table-products').DataTable({
 		"paging":   false,
+		"info": false,
         "language": {
             // "lengthMenu": "Ver _MENU_ ",
             "zeroRecords": "Lo sentimos, no se encontro ningun producto",
@@ -210,6 +213,7 @@ $(document).ready(function () {
 
 	$('#table-bases').DataTable({
 		"paging":   false,
+		"info": false,
         "language": {
         	"decimal":        "",
             "lengthMenu": "Ver _MENU_ ",
@@ -225,6 +229,25 @@ $(document).ready(function () {
 		        "previous":   "Anterior"
 		    }
         }
-	});	
+	});
+
+	$("#input-24").fileinput({
+    	theme: "fa",
+    	language: "es",
+        initialPreviewAsData: false,
+        deleteUrl: "/site/file-delete",
+        overwriteInitial: false,
+        maxFileSize: 1000,
+        maxFileCount: 4,
+        showUpload: false
+    });
+
+   	$(document).on('click','[data-toggle="lightbox"]', function(event){
+      event.preventDefault();
+      $(this).ekkoLightbox({
+        alwaysShowClose: true
+      });
+    });
+
 
 });

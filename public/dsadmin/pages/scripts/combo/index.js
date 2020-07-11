@@ -69,7 +69,8 @@ $(document).ready(function (){
 	}
 
 	$('#table-combos').DataTable({
-		"paging":   true,
+		"paging":   false,
+		"info": false,
         "language": {
             "lengthMenu": "Ver _MENU_ ",
             "zeroRecords": "Lo sentimos, no se encontro ningun combo",
@@ -85,5 +86,12 @@ $(document).ready(function (){
 		    }
         }
 	});
+
+    $(document).on('click','[data-toggle="lightbox"]', function(event){
+      event.preventDefault();
+      $(this).ekkoLightbox({
+        alwaysShowClose: true
+      });
+    });
 
 });

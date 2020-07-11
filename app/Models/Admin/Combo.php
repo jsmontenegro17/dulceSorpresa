@@ -10,7 +10,7 @@ use App\Models\Admin\Product;
 
 class Combo extends Model
 {
-	protected $fillable = ['combo_name', 'combo_type_id', 'base_id', 'combo_description', 'combo_price', 'combo_state'];
+	protected $fillable = ['combo_name', 'combo_type_id', 'base_id', 'combo_description', 'user_id', 'combo_purchase_price', 'combo_price_percentage', 'combo_sale_price', 'combo_state'];
     protected $primaryKey = 'combo_id';
 
     public function comboImages()
@@ -21,7 +21,7 @@ class Combo extends Model
     public function comboType()
     {
         return $this->belongsTo(ComboType::class, 'combo_type_id');
-    }
+    }    
 
     public function base()
     {

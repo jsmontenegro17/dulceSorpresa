@@ -15,7 +15,7 @@
 				<div class="row col-md-12 justify-content-center">
 	            	@foreach($base->baseImages as $base_image)
 		            	<div class="product-image-thumb col-md-2">
-		                	<img src="{{Storage::url("images/bases/".$base_image->base_image_name)}}" class="product-image" alt="Product Image">
+		                	<img src="{{$base_image->base_image_name}}" class="product-image" alt="Product Image">
 		            	</div>
 	                @endforeach
 	            </div>

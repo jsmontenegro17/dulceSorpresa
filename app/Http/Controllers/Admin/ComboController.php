@@ -7,12 +7,14 @@ use Illuminate\Http\Request;
 use App\Http\Requests\ValidationCombo;
 use App\Models\Admin\Product;
 use App\Models\Admin\Combo;
+use App\Models\Admin\ComboImage;
 use App\Models\Admin\ComboProduct;
 use App\Models\Admin\ComboType;
 use App\Models\Admin\Base;
 use Illuminate\Support\Str;
 use Intervention\Image\Facades\image;
 use Illuminate\Support\Facades\Storage;
+use DB;
 
 
 
@@ -40,7 +42,7 @@ class ComboController extends Controller
     {
         
         $combo_types = ComboType::orderBy('created_at', 'DESC')->get();
-        $products = Product::where('product_state', 'active')->orderBy('created_at', 'DESC')->with('productType')->get();
+        $products = Product::where('product_state', 'active')->orderBy('created_at', 'DESC')->with('productCategory')->get();
         $bases = Base::orderBy('created_at', 'DESC')->get();
         return view('admin.combo.create', compact('combo_types','products','bases'));
     }
@@ -54,13 +56,14 @@ class ComboController extends Controller
     public function store(ValidationCombo $request)
     {
 
-        if(isset($request->state)){
-            $request->request->add(['combo_state' => 'active']);
+        // if(isset($request->state)){
+        //     $request->request->add(['combo_state' => 'active']);
             
-        }else{
-            $request->request->add(['combo_state' => 'desactive']);
-        }
+        // }else{
+        //     $request->request->add(['combo_state' => 'desactive']);
+        // }
 
+        $request->request->add(['user_id' => 1]);
 
         $manyToMany = array();
         for ( $i=0 ; $i< count($request->product_id); $i++ )
@@ -71,10 +74,10 @@ class ComboController extends Controller
         $combo = Combo::create($request->all());
         $combo->products()->sync($manyToMany);
 
-        $combos = Base::all()->last();
+        $combos = Combo::all()->last();
         $combo_id = $combos->combo_id;
-        
-        $combo_images = $request->file('combo_image');
+
+        $combo_images = $request->file('combo_image'); 
 
         if ($combo_images==NULL) {
             
@@ -88,9 +91,12 @@ class ComboController extends Controller
                 $imagen[] = Image::make($combo_image)->encode('jpg', 75);
                 $images_names[] = $image_name;  
 
-                Storage::disk('public')->put("images/combos/$images_names[$uploadcount]", $imagen[$uploadcount]->stream());
+                Storage::disk('dropbox')->put("images/combos/$images_names[$uploadcount]", $imagen[$uploadcount]->stream());
+                $dropbox = Storage::disk('dropbox')->getDriver()->getAdapter()->getClient();
+                $response = $dropbox->createSharedLinkWithSettings("images/combos/$images_names[$uploadcount]", ["requested_visibility"=>"public"]);
+                $ruta[] = str_replace('dl=0', 'raw=1', $response['url']);
 
-                $request->request->add(['combo_image_name' => $images_names[$uploadcount]]);
+                $request->request->add(['combo_image_name' => $ruta[$uploadcount]]);
                 $request->request->add(['combo_id' => $combo_id]);
 
                 ComboImage::create($request->all());
@@ -123,9 +129,22 @@ class ComboController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit($combo_id)
     {
-        //
+        $combo_types = ComboType::orderBy('created_at', 'DESC')->get();
+        $products = Product::where('product_state', 'active')->orderBy('created_at', 'DESC')->with('productCategory')->get();
+        $bases = Base::orderBy('created_at', 'DESC')->get();
+        $combo = Combo::with('comboImages','comboType','base','products')->find($combo_id);
+
+        $combo_products = [];
+        $combo_units = [];
+        foreach ($combo->products as $product) {
+            $combo_products[] = $product->product_id;
+            $combo_units[$product->product_id] = $product->pivot->units; 
+        }
+
+        // dd($combo_units);
+        return view('admin.combo.edit', compact('combo_types','products','bases','combo','combo_products','combo_units'));
     }
 
     /**
@@ -135,9 +154,24 @@ class ComboController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(ValidationCombo $request, $combo_id)
     {
-        //
+        Combo::findOrFail($combo_id)->update($request->all());
+        $combo_products = ComboProduct::where("combo_id", "=", $combo_id)->get();
+        // dd($combo_products);
+        foreach ($combo_products as $combo_product) {
+            ComboProduct::destroy($combo_product->combo_product_id);
+        }
+
+        for ( $i=0 ; $i< count($request->product_id); $i++ )
+        {
+           
+            DB::table('combo_products')->insert(
+                ['combo_id' => $combo_id, 'product_id' => $request->product_id[$i], 'units' => $request->units[$request->product_id[$i]]]
+            );
+        }
+
+        return redirect('admin/combo/')->with('message', 'Combo editado correctamente');
     }
 
     public function state($combo_id)
@@ -167,13 +201,20 @@ class ComboController extends Controller
     public function destroy($combo_id)
     {
         $combo =  Combo::findOrFail($combo_id);
-        combo::destroy($combo_id);
-        
+    
+        $deleteCount = 0;
+
         foreach ($combo->comboImages as $combo_image) {
-            Storage::disk('public')->delete("images/combos/$combo_image->combo_image_name");  
+            $rute[] = explode("/", $combo_image->combo_image_name);
+            $name_image_delete[] = explode("?",$rute[$deleteCount][5]);
+
+            Storage::disk('dropbox')->getDriver()->getAdapter()->getClient()->delete("images/combos/".$name_image_delete[$deleteCount][0]);
+            ComboImage::destroy($combo_image->combo_image_id); 
+
+            $deleteCount++;  
         }
 
-        
+        combo::destroy($combo_id);
         return redirect('admin/combo/')->with('message', 'combo eliminado correctamente');
     }
 }

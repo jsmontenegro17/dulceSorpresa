@@ -47,12 +47,12 @@ class BaseController extends Controller
     {
     	$base_images = $request->file('base_image');
 
-        if(isset($request->state)){
-            $request->request->add(['base_state' => 'active']);
+        // if(isset($request->state)){
+        //     $request->request->add(['base_state' => 'active']);
             
-        }else{
-            $request->request->add(['base_state' => 'desactive']);
-        }
+        // }else{
+        //     $request->request->add(['base_state' => 'desactive']);
+        // }
 
     	Base::create($request->all());
     	$bases = Base::all()->last();
@@ -70,9 +70,12 @@ class BaseController extends Controller
             	$imagen[] = Image::make($base_image)->encode('jpg', 75);
                 $images_names[] = $image_name;  
 
-                Storage::disk('public')->put("images/bases/$images_names[$uploadcount]", $imagen[$uploadcount]->stream());
+                Storage::disk('dropbox')->put("images/bases/$images_names[$uploadcount]", $imagen[$uploadcount]->stream());
+                $dropbox = Storage::disk('dropbox')->getDriver()->getAdapter()->getClient();
+                $response = $dropbox->createSharedLinkWithSettings("images/bases/$images_names[$uploadcount]", ["requested_visibility"=>"public"]);
+                $ruta[] = str_replace('dl=0', 'raw=1', $response['url']);
 
-                $request->request->add(['base_image_name' => $images_names[$uploadcount]]);
+                $request->request->add(['base_image_name' => $ruta[$uploadcount]]);
                 $request->request->add(['base_id' => $base_id]);
 
                 BaseImage::create($request->all());
@@ -104,7 +107,7 @@ class BaseController extends Controller
      */
     public function edit($base_id)
     {
-        $base = Base::findOrFail($base_id); 
+        $base = Base::with('baseImages')->find($base_id);
         return view('admin.base.edit', compact('base'));
     }
 
@@ -136,12 +139,21 @@ class BaseController extends Controller
      */
     public function destroy($base_id)
     {
-        $base = base::findOrFail($base_id);
+        $base = Base::findOrFail($base_id);
         $count_base = count($base->combos);
 
         if ($count_base==0) {
+
+            $deleteCount = 0;
+
             foreach ($base->baseImages as $base_image) {
-                Storage::disk('public')->delete("images/bases/$base_image->base_image_name");  
+                $rute[] = explode("/", $base_image->base_image_name);
+                $name_image_delete[] = explode("?",$rute[$deleteCount][5]);
+
+                Storage::disk('dropbox')->getDriver()->getAdapter()->getClient()->delete("images/bases/".$name_image_delete[$deleteCount][0]);
+                
+                BaseImage::destroy($base_image->base_image_id);              
+                $deleteCount++;
             }
 
             base::destroy($base_id);

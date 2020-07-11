@@ -30,7 +30,11 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function (){
 
 	Route::get('/desk', function () { return view('admin.admin'); })->name('admin');
 
-	Route::get('/customer', 'RolController@customers')->name('customer-index');
+	Route::get('/customer', 'CustomerController@index')->name('customer-index');
+	Route::get('/user', 'UserController@index')->name('user-index');
+
+
+	Route::get('/suggestions', 'SuggestionController@index')->name('suggestions-index');
 
 
 	Route::get('combo-type/', 'ComboTypeController@index')->name('combo-type-index');
@@ -53,9 +57,9 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function (){
 	
 	Route::get('combo/image/create/{combo}', 'ComboImageController@create')->name('combo-image-create');
 	Route::post('combo/image/create/store', 'ComboImageController@store')->name('combo-image-store');
-	Route::get('combo/image/edit/{combo_image_name}', 'ComboImageController@edit')->name('combo-image-edit');
-	Route::put('combo/image/edit/{combo_image_name}', 'ComboImageController@update')->name('combo-image-update');
-	Route::get('combo/image/destroy/{combo_image_name}', 'ComboImageController@destroy')->name('combo-image-destroy');
+	Route::get('combo/image/edit/{combo_image_id}', 'ComboImageController@edit')->name('combo-image-edit');
+	Route::put('combo/image/edit/{combo_image_id}', 'ComboImageController@update')->name('combo-image-update');
+	Route::get('combo/image/destroy/{combo_image_id}', 'ComboImageController@destroy')->name('combo-image-destroy');
 
 
 
@@ -74,13 +78,13 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function (){
 	
 
 
-	Route::get('product-type/', 'ProductTypeController@index')->name('product-type-index');
-	Route::get('product-type/create', 'ProductTypeController@create')->name('product-type-create');
-	Route::post('product-type/store', 'ProductTypeController@store')->name('product-type-store');
-	Route::get('product-type/{product_type_id}/edit', 'ProductTypeController@edit')->name('product-type-edit');
-	Route::put('product-type/{product_type_id}', 'ProductTypeController@update')->name('product-type-update');
-	Route::post('product-type/', 'ProductTypeController@show')->name('product-type-show');
-	Route::get('product-type/{product_type_id}/destroy', 'ProductTypeController@destroy')->name('product-type-destroy');
+	Route::get('product-category/', 'ProductCategoryController@index')->name('product-category-index');
+	Route::get('product-category/create', 'ProductCategoryController@create')->name('product-category-create');
+	Route::post('product-category/store', 'ProductCategoryController@store')->name('product-category-store');
+	Route::get('product-category/{product_category_id}/edit', 'ProductCategoryController@edit')->name('product-category-edit');
+	Route::put('product-category/{product_category_id}', 'ProductCategoryController@update')->name('product-category-update');
+	Route::post('product-category/', 'ProductCategoryController@show')->name('product-category-show');
+	Route::get('product-category/{product_category_id}/destroy', 'ProductCategoryController@destroy')->name('product-category-destroy');
 
 	Route::get('base/', 'BaseController@index')->name('base-index');
 	Route::get('base/create', 'BaseController@create')->name('base-create');
@@ -94,9 +98,9 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function (){
 
 	Route::get('base/image/create/{base}', 'BaseImageController@create')->name('base-image-create');
 	Route::post('base/image/create/store', 'BaseImageController@store')->name('base-image-store');
-	Route::get('base/image/edit/{base_image_name}', 'BaseImageController@edit')->name('base-image-edit');
-	Route::put('base/image/edit/{base_image_name}', 'BaseImageController@update')->name('base-image-update');
-	Route::get('base/image/destroy/{base_image_name}', 'BaseImageController@destroy')->name('base-image-destroy');
+	Route::get('base/image/edit/{base_image_id}', 'BaseImageController@edit')->name('base-image-edit');
+	Route::put('base/image/edit/{base_image_id}', 'BaseImageController@update')->name('base-image-update');
+	Route::get('base/image/destroy/{base_image_id}', 'BaseImageController@destroy')->name('base-image-destroy');
 
 
 

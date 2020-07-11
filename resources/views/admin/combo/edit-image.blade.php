@@ -49,7 +49,7 @@
                 <div class="card-body">                                                      
                     <div class="row form-group justify-content-center">
                       <div class="col-md-2">
-                        <div class="product-image-thumb"><img src="{{Storage::url("images/products/".$product->product_image_name)}}" alt="Product Image"></div>
+                        <div class="product-image-thumb"><img src="{{$product->product_image_name}}" alt="Product Image"></div>
                       </div>
                       <div class="row col-md-10">
                         <label for="exampleInputFile">Selecciona otra imagen si la deseas cambiar</label>

@@ -22,19 +22,19 @@ class BaseImage extends Model
 
     public static function setImage($base_image, $actual = false)
     {
+
         if ($base_image) {
             if ($actual) {
-                Storage::disk('public')->delete("images/bases/$actual");
+                Storage::disk('dropbox')->getDriver()->getAdapter()->getClient()->delete("images/bases/".$actual);
             }
             $imageName = Str::random(20) . '.jpg';
 
             $imagen = Image::make($base_image)->encode('jpg', 75);
-            // $imagen->resize(65, 65, function ($constraint) {
-            //     $constraint->upsize();
-            // });
 
-            Storage::disk('public')->put("images/bases/$imageName", $imagen->stream());
-            return $imageName;
+            Storage::disk('dropbox')->put("images/bases/$imageName", $imagen->stream());
+            $dropbox = Storage::disk('dropbox')->getDriver()->getAdapter()->getClient();
+            $response = $dropbox->createSharedLinkWithSettings("images/bases/$imageName", ["requested_visibility"=>"public"]);
+            return str_replace('dl=0', 'raw=1', $response['url']);
         } else {
             return false;
         } 

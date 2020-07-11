@@ -4,24 +4,19 @@
 
 @section('scripts')
 
+
   <script src="{{asset('dsadmin/plugins/jquery-validation/jquery.validate.min.js')}}"></script>
   <script src="{{asset('dsadmin/plugins/jquery-validation/additional-methods.min.js')}}"></script>
   <script src="{{asset('dsadmin/plugins/jquery-validation/localization/messages_es.min.js')}}"></script>
-  <script src="{{asset('dsadmin/pages/scripts/base/create.js')}}"></script>
   <script src="{{asset('dsadmin/custom/validation-general.js')}}"></script>
   <script src="{{asset('dsadmin/plugins/bs-custom-file-input/bs-custom-file-input.min.js')}}"></script>
-
-
-
-{{--   <script src="{{asset('dsadmin/plugins/bootstrap-fileinput/js/fileinput.min.js')}}"></script>
-  <script src="{{asset('dsadmin/plugins/bootstrap-fileinput/js/locales/es.js')}}"></script>
-  <script src="{{asset('dsadmin/plugins/bootstrap-fileinput/themes/fa/theme.min.js')}}"></script> --}}
 
 @endsection
 
 @section('styles')
+
   <link rel="stylesheet" href="{{asset("dsadmin//plugins/toastr/toastr.min.css")}}">
-  <link href="{{asset("dsadmin/plugins/bootstrap-fileinput/css/fileinput.min.css")}}" rel="stylesheet" type="text/css"/>
+  <link href="{{asset("dsadmin/pages/css/base/create.css")}}" rel="stylesheet" type="text/css"/>
 
 @endsection
 
@@ -30,7 +25,7 @@
 <section class="content">
 
   <!-- Default box -->
-  <div class="card">
+  <div class="card card-success">
     <div class="card-header">
       <h3 class="card-title"><strong>Editar esta base</strong></h3>
       <div class="float-sm-right">
@@ -58,11 +53,11 @@
                       </div>
                     </div>  
                     <div class="row form-group">                     
-                      <div class="col-md-7">
+                      <div class="col-md-6">
                         <label for="exampleInputEmail1">Descripción</label>
                         <textarea id="base_description" name="base_description" class="form-control" placeholder="Sabor, medida o cantidad" required>{{old('base_description', $base->base_description ?? '')}}</textarea>
                       </div>   
-                      <div class="col-md-3">
+                      <div class="col-md-4">
                         <label for="exampleInputEmail1">Precio</label>
                         <div class="input-group mb-3">
                           <div class="input-group-prepend">
@@ -83,14 +78,14 @@
                             <label class="custom-control-label" for="customSwitch3"></label>
                           </div>
                         </div>
-                      </div>                      
+                      </div>                     
                     </div>
 
                   </div>  
 
                 <!-- /.card-body -->
                 <div class="card-footer">
-                  <button type="submit" class="btn btn-primary">Guardar</button>
+                  <button type="submit" class="btn btn-success col-md-12">Guardar</button>
                 </div>
               </form>
             </div>
